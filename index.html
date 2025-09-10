@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RuralCare - AI-Powered Telemedicine for Rural Healthcare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeOut 3s ease-in-out forwards;
+        }
+        
+        .pulse-heart {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .pulse-heart::before {
+            content: '🏥';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.9) 0%, rgba(16, 185, 129, 0.9) 100%),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23f0f9ff" width="1200" height="800"/><g fill="%23e0f2fe" opacity="0.3"><circle cx="200" cy="150" r="80"/><circle cx="800" cy="200" r="60"/><circle cx="1000" cy="400" r="100"/><circle cx="300" cy="600" r="70"/></g></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hidden { display: none; }
+        
+        .rural-image {
+            background: linear-gradient(45deg, #f0f9ff, #ecfdf5);
+            border: 2px solid #e0f2fe;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Loading Animation -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-center">
+            <div class="pulse-heart mb-4"></div>
+            <p class="text-white text-lg font-medium">Connecting Rural Communities to Healthcare</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-blue-600">🏥 RuralCare</div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-blue-600 transition-colors">Home</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 transition-colors">How It Works</a>
+                    <a href="#about" class="text-gray-700 hover:text-blue-600 transition-colors">About</a>
+                    <a href="#contact" class="text-gray-700 hover:text-blue-600 transition-colors">Contact</a>
+                    <a href="#" onclick="showPage('doctor-login')" class="text-gray-700 hover:text-blue-600 transition-colors">Doctor Portal</a>
+                </div>
+                <div class="flex space-x-3">
+                    <button class="btn-primary text-white px-6 py-2 rounded-lg font-medium" onclick="showPage('appointment')">
+                        Book Appointment
+                    </button>
+                    <button class="border border-blue-600 text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors" onclick="showPage('doctor-login')">
+                        Doctor Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="home" class="page">
+        <!-- Hero Section -->
+        <section class="hero-bg min-h-screen flex items-center pt-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="fade-in">
+                        <h1 class="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                            AI-Powered Telemedicine for Rural Healthcare
+                        </h1>
+                        <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+                            Connecting rural communities with quality healthcare through advanced telemedicine technology. 
+                            Get expert medical care from the comfort of your home.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button class="btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg" onclick="showPage('appointment')">
+                                📅 Book Appointment
+                            </button>
+                            <button class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-50 transition-colors">
+                                🎥 Watch Demo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="fade-in">
+                        <div class="rural-image rounded-2xl p-8 text-center">
+                            <div class="text-8xl mb-4">🏞️</div>
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">Rural Healthcare Access</h3>
+                            <p class="text-gray-600">Bringing quality medical care to remote communities</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Healthcare Made Accessible</h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Experience the future of rural healthcare with our comprehensive telemedicine platform
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="card-hover bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl text-center">
+                        <div class="text-5xl mb-4">🤖</div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-4">AI-Powered Diagnosis</h3>
+                        <p class="text-gray-600">Advanced AI assists doctors in providing accurate diagnoses and treatment recommendations</p>
+                    </div>
+                    
+                    <div class="card-hover bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl text-center">
+                        <div class="text-5xl mb-4">👨‍⚕️</div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-4">Expert Doctors</h3>
+                        <p class="text-gray-600">Connect with qualified healthcare professionals from top hospitals nationwide</p>
+                    </div>
+                    
+                    <div class="card-hover bg-gradient-to-br from-teal-50 to-teal-100 p-8 rounded-2xl text-center">
+                        <div class="text-5xl mb-4">📱</div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-4">Easy Access</h3>
+                        <p class="text-gray-600">Book appointments and consult doctors from anywhere using your smartphone or computer</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rural Healthcare Images Section -->
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Serving Rural Communities</h2>
+                    <p class="text-xl text-gray-600">Bringing healthcare closer to home</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="rural-image rounded-2xl p-8 text-center">
+                        <div class="text-6xl mb-4">🏡</div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Home Consultations</h3>
+                        <p class="text-gray-600">Receive medical care from the comfort of your home</p>
+                    </div>
+                    
+                    <div class="rural-image rounded-2xl p-8 text-center">
+                        <div class="text-6xl mb-4">🚑</div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Emergency Support</h3>
+                        <p class="text-gray-600">24/7 emergency consultation services</p>
+                    </div>
+                    
+                    <div class="rural-image rounded-2xl p-8 text-center">
+                        <div class="text-6xl mb-4">💊</div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Medicine Delivery</h3>
+                        <p class="text-gray-600">Prescription delivery to your doorstep</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+                    <p class="text-xl text-gray-600">Simple steps to get the healthcare you need</p>
+                </div>
+                
+                <div class="grid md:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">1️⃣</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Choose Hospital</h3>
+                        <p class="text-gray-600">Select from our network of partner hospitals</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">2️⃣</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Select Doctor</h3>
+                        <p class="text-gray-600">Choose a specialist based on your needs</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">3️⃣</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Book Appointment</h3>
+                        <p class="text-gray-600">Schedule your consultation at a convenient time</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">4️⃣</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Get Treatment</h3>
+                        <p class="text-gray-600">Receive AI-powered diagnosis and treatment</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-4xl font-bold text-gray-900 mb-6">About RuralCare</h2>
+                        <p class="text-lg text-gray-600 mb-6">
+                            RuralCare is dedicated to bridging the healthcare gap in rural communities through innovative 
+                            telemedicine solutions. Our AI-powered platform connects patients with qualified healthcare 
+                            professionals, ensuring quality medical care is accessible to everyone, regardless of location.
+                        </p>
+                        <p class="text-lg text-gray-600 mb-8">
+                            With over 500+ partner hospitals and 1000+ certified doctors, we're committed to making 
+                            healthcare more accessible, affordable, and efficient for rural populations.
+                        </p>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-blue-600">500+</div>
+                                <div class="text-gray-600">Partner Hospitals</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-green-600">1000+</div>
+                                <div class="text-gray-600">Certified Doctors</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rural-image rounded-2xl p-12 text-center">
+                        <div class="text-8xl mb-4">🌾</div>
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Rural Communities First</h3>
+                        <p class="text-gray-600">Dedicated to serving underserved rural populations</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Contact & Support</h2>
+                    <p class="text-xl text-gray-600">We're here to help you access quality healthcare</p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center p-8 bg-blue-50 rounded-2xl">
+                        <div class="text-4xl mb-4">📞</div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">24/7 Helpline</h3>
+                        <p class="text-gray-600 mb-4">Call us anytime for support</p>
+                        <p class="text-blue-600 font-semibold">1-800-RURAL-CARE</p>
+                    </div>
+                    
+                    <div class="text-center p-8 bg-green-50 rounded-2xl">
+                        <div class="text-4xl mb-4">💬</div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Live Chat</h3>
+                        <p class="text-gray-600 mb-4">Chat with our support team</p>
+                        <button class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Start Chat
+                        </button>
+                    </div>
+                    
+                    <div class="text-center p-8 bg-teal-50 rounded-2xl">
+                        <div class="text-4xl mb-4">📧</div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Email Support</h3>
+                        <p class="text-gray-600 mb-4">Send us your questions</p>
+                        <p class="text-teal-600 font-semibold">support@ruralcare.com</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Appointment Booking Page -->
+    <div id="appointment" class="page hidden">
+        <div class="min-h-screen bg-gray-50 pt-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Book Your Appointment</h1>
+                        <p class="text-gray-600">Follow these simple steps to schedule your consultation</p>
+                    </div>
+
+                    <!-- Progress Steps -->
+                    <div class="flex justify-center mb-12">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <div id="step1-indicator" class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">1</div>
+                                <span class="ml-2 text-sm font-medium text-gray-900">Hospital</span>
+                            </div>
+                            <div class="w-12 h-1 bg-gray-200"></div>
+                            <div class="flex items-center">
+                                <div id="step2-indicator" class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold">2</div>
+                                <span class="ml-2 text-sm font-medium text-gray-600">Doctor</span>
+                            </div>
+                            <div class="w-12 h-1 bg-gray-200"></div>
+                            <div class="flex items-center">
+                                <div id="step3-indicator" class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold">3</div>
+                                <span class="ml-2 text-sm font-medium text-gray-600">Schedule</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Choose Hospital -->
+                    <div id="step1" class="appointment-step">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-6">Choose a Hospital</h2>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="hospital-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition-colors" onclick="selectHospital('Rural General Hospital')">
+                                <div class="flex items-center mb-4">
+                                    <div class="text-3xl mr-4">🏥</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Rural General Hospital</h3>
+                                        <p class="text-gray-600">Comprehensive healthcare services</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <p>📍 Main Street, Rural County</p>
+                                    <p>⭐ 4.8/5 rating • 200+ doctors</p>
+                                </div>
+                            </div>
+
+                            <div class="hospital-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition-colors" onclick="selectHospital('Community Health Center')">
+                                <div class="flex items-center mb-4">
+                                    <div class="text-3xl mr-4">🏥</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Community Health Center</h3>
+                                        <p class="text-gray-600">Family medicine specialists</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <p>📍 Oak Avenue, Rural County</p>
+                                    <p>⭐ 4.6/5 rating • 150+ doctors</p>
+                                </div>
+                            </div>
+
+                            <div class="hospital-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition-colors" onclick="selectHospital('Regional Medical Center')">
+                                <div class="flex items-center mb-4">
+                                    <div class="text-3xl mr-4">🏥</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Regional Medical Center</h3>
+                                        <p class="text-gray-600">Advanced medical care</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <p>📍 Highway 101, Regional District</p>
+                                    <p>⭐ 4.9/5 rating • 300+ doctors</p>
+                                </div>
+                            </div>
+
+                            <div class="hospital-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition-colors" onclick="selectHospital('Valley Healthcare')">
+                                <div class="flex items-center mb-4">
+                                    <div class="text-3xl mr-4">🏥</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Valley Healthcare</h3>
+                                        <p class="text-gray-600">Specialized rural care</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <p>📍 Valley Road, Mountain County</p>
+                                    <p>⭐ 4.7/5 rating • 180+ doctors</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Choose Doctor -->
+                    <div id="step2" class="appointment-step hidden">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-6">Select a Doctor</h2>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="doctor-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition-colors" onclick="selectDoctor('Dr. Sarah Johnson')">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl mr-4">👩‍⚕️</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Dr. Sarah Johnson</h3>
+                                        <p class="text-gray-600">Family Medicine</p>
+                                        <p class="text-sm text-gray-500">15 years experience</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <p>⭐ 4.9/5 rating • Available today</p>
+                                    <p>💰 $75 consultation fee</p>
+                                </div>
+                            </div>
+
+                            <div class="doctor-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition-colors" onclick="selectDoctor('Dr. Michael Chen')">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-2xl mr-4">👨‍⚕️</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Dr. Michael Chen</h3>
+                                        <p class="text-gray-600">Internal Medicine</p>
+                                        <p class="text-sm text-gray-500">12 years experience</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <p>⭐ 4.8/5 rating • Available tomorrow</p>
+                                    <p>💰 $80 consultation fee</p>
+                                </div>
+                            </div>
+
+                            <div class="doctor-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition-colors" onclick="selectDoctor('Dr. Emily Rodriguez')">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center text-2xl mr-4">👩‍⚕️</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Dr. Emily Rodriguez</h3>
+                                        <p class="text-gray-600">Pediatrics</p>
+                                        <p class="text-sm text-gray-500">10 years experience</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <p>⭐ 4.9/5 rating • Available today</p>
+                                    <p>💰 $70 consultation fee</p>
+                                </div>
+                            </div>
+
+                            <div class="doctor-card border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition-colors" onclick="selectDoctor('Dr. Robert Kim')">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-2xl mr-4">👨‍⚕️</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Dr. Robert Kim</h3>
+                                        <p class="text-gray-600">Cardiology</p>
+                                        <p class="text-sm text-gray-500">18 years experience</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <p>⭐ 4.8/5 rating • Available this week</p>
+                                    <p>💰 $100 consultation fee</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Schedule Appointment -->
+                    <div id="step3" class="appointment-step hidden">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-6">Schedule Your Appointment</h2>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Select Date & Time</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Date</label>
+                                        <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Time</label>
+                                        <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            <option>9:00 AM</option>
+                                            <option>10:00 AM</option>
+                                            <option>11:00 AM</option>
+                                            <option>2:00 PM</option>
+                                            <option>3:00 PM</option>
+                                            <option>4:00 PM</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Your Location</label>
+                                        <input type="text" placeholder="Enter your area/address" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Appointment Summary</h3>
+                                <div class="bg-gray-50 rounded-lg p-6 space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Hospital:</span>
+                                        <span id="selected-hospital" class="font-medium">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Doctor:</span>
+                                        <span id="selected-doctor" class="font-medium">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Consultation Fee:</span>
+                                        <span class="font-medium text-green-600">$75</span>
+                                    </div>
+                                    <hr class="my-4">
+                                    <div class="flex justify-between text-lg font-semibold">
+                                        <span>Total:</span>
+                                        <span class="text-blue-600">$75</span>
+                                    </div>
+                                </div>
+                                <button class="w-full btn-primary text-white py-3 rounded-lg font-semibold mt-6" onclick="showPage('patient-form')">
+                                    Continue to Patient Form
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button id="back-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors hidden" onclick="previousStep()">
+                            ← Back
+                        </button>
+                        <button class="px-6 py-3 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed" onclick="showPage('home')">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Form Page -->
+    <div id="patient-form" class="page hidden">
+        <div class="min-h-screen bg-gray-50 pt-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Patient Information</h1>
+                        <p class="text-gray-600">Please provide your details and symptoms</p>
+                    </div>
+
+                    <form class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                <input type="text" placeholder="Enter your full name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                                <input type="number" placeholder="Enter your age" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                <input type="tel" placeholder="Enter your phone number" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" placeholder="Enter your email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Current Symptoms</label>
+                            <textarea rows="4" placeholder="Describe your symptoms in detail..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Medical History</label>
+                            <textarea rows="3" placeholder="Any previous medical conditions, surgeries, or medications..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Upload Medical Reports (Optional)</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                                <div class="text-4xl mb-2">📄</div>
+                                <p class="text-gray-600 mb-2">Drag and drop files here, or click to browse</p>
+                                <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png" class="hidden" id="file-upload">
+                                <button type="button" class="text-blue-600 hover:text-blue-700 font-medium" onclick="document.getElementById('file-upload').click()">
+                                    Choose Files
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors" onclick="showPage('appointment')">
+                                ← Back to Appointment
+                            </button>
+                            <button type="button" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold" onclick="generateAISummary()">
+                                Generate AI Summary
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Summary Page -->
+    <div id="ai-summary" class="page hidden">
+        <div class="min-h-screen bg-gray-50 pt-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">AI Medical Summary</h1>
+                        <p class="text-gray-600">AI-generated analysis and recommendations</p>
+                    </div>
+
+                    <div class="space-y-8">
+                        <!-- Patient Summary -->
+                        <div class="bg-blue-50 rounded-lg p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                🤖 AI Analysis Summary
+                            </h2>
+                            <div class="space-y-3 text-gray-700">
+                                <p><strong>Patient:</strong> John Doe, 35 years old</p>
+                                <p><strong>Primary Symptoms:</strong> Persistent headache, fatigue, mild fever</p>
+                                <p><strong>Duration:</strong> 3 days</p>
+                                <p><strong>Severity:</strong> Moderate</p>
+                            </div>
+                        </div>
+
+                        <!-- AI Recommendations -->
+                        <div class="bg-green-50 rounded-lg p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                💊 AI Recommendations
+                            </h2>
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-lg p-4 border-l-4 border-green-500">
+                                    <h3 class="font-semibold text-gray-900 mb-2">Immediate Care</h3>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>Rest and adequate hydration</li>
+                                        <li>Over-the-counter pain relief (acetaminophen 500mg every 6 hours)</li>
+                                        <li>Monitor temperature regularly</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-white rounded-lg p-4 border-l-4 border-yellow-500">
+                                    <h3 class="font-semibold text-gray-900 mb-2">Follow-up Required</h3>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>Schedule follow-up if symptoms persist beyond 5 days</li>
+                                        <li>Seek immediate care if fever exceeds 102°F</li>
+                                        <li>Return if headache becomes severe or vision changes occur</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prescription -->
+                        <div class="bg-purple-50 rounded-lg p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                📋 Suggested Prescription
+                            </h2>
+                            <div class="bg-white rounded-lg p-4 border">
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center border-b pb-2">
+                                        <span class="font-medium">Acetaminophen 500mg</span>
+                                        <span class="text-gray-600">Every 6 hours as needed</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b pb-2">
+                                        <span class="font-medium">Multivitamin</span>
+                                        <span class="text-gray-600">Once daily with food</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Increased fluid intake</span>
+                                        <span class="text-gray-600">8-10 glasses per day</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Doctor Review Required -->
+                        <div class="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                ⚠️ Doctor Review Required
+                            </h2>
+                            <p class="text-gray-700 mb-4">
+                                This AI analysis is preliminary and requires review by your assigned doctor. 
+                                Your consultation is scheduled for tomorrow at 10:00 AM with Dr. Sarah Johnson.
+                            </p>
+                            <div class="flex space-x-4">
+                                <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Join Video Call (When Ready)
+                                </button>
+                                <button class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors" onclick="showPage('doctor-dashboard')">
+                                    View Doctor Dashboard
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors" onclick="showPage('patient-form')">
+                                ← Back to Form
+                            </button>
+                            <button class="btn-primary text-white px-8 py-3 rounded-lg font-semibold" onclick="showPage('home')">
+                                Complete Booking
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Login Page -->
+    <div id="doctor-login" class="page hidden">
+        <div class="min-h-screen bg-gray-50 pt-20">
+            <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-center mb-8">
+                        <div class="text-4xl mb-4">👨‍⚕️</div>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Doctor Portal</h1>
+                        <p class="text-gray-600">Sign in to access your dashboard</p>
+                    </div>
+
+                    <form class="space-y-6" onsubmit="handleDoctorLogin(event)">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                            <input type="email" id="doctor-email" required placeholder="Enter your email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                            <input type="password" id="doctor-password" required placeholder="Enter your password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label class="ml-2 block text-sm text-gray-700">Remember me</label>
+                            </div>
+                            <a href="#" class="text-sm text-blue-600 hover:text-blue-700">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg font-semibold">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-gray-600">New doctor? 
+                            <button onclick="showPage('doctor-registration')" class="text-blue-600 hover:text-blue-700 font-medium">
+                                Register here
+                            </button>
+                        </p>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-gray-200">
+                        <button class="w-full text-gray-600 hover:text-gray-700 transition-colors" onclick="showPage('home')">
+                            ← Back to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Registration Page -->
+    <div id="doctor-registration" class="page hidden">
+        <div class="min-h-screen bg-gray-50 pt-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-center mb-8">
+                        <div class="text-4xl mb-4">🩺</div>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Doctor Registration</h1>
+                        <p class="text-gray-600">Join our network of healthcare professionals</p>
+                    </div>
+
+                    <!-- Registration Steps -->
+                    <div class="flex justify-center mb-12">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <div id="reg-step1-indicator" class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">1</div>
+                                <span class="ml-2 text-sm font-medium text-gray-900">Personal Info</span>
+                            </div>
+                            <div class="w-12 h-1 bg-gray-200"></div>
+                            <div class="flex items-center">
+                                <div id="reg-step2-indicator" class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold">2</div>
+                                <span class="ml-2 text-sm font-medium text-gray-600">Education</span>
+                            </div>
+                            <div class="w-12 h-1 bg-gray-200"></div>
+                            <div class="flex items-center">
+                                <div id="reg-step3-indicator" class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold">3</div>
+                                <span class="ml-2 text-sm font-medium text-gray-600">Documents</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="space-y-8" onsubmit="handleDoctorRegistration(event)">
+                        <!-- Step 1: Personal Information -->
+                        <div id="reg-step1" class="registration-step">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Personal Information</h2>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                                    <input type="text" required placeholder="Dr. John Smith" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                                    <input type="email" required placeholder="doctor@email.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                                    <input type="tel" required placeholder="+1 (555) 123-4567" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth *</label>
+                                    <input type="date" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
+                                    <select required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="">Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Medical License Number *</label>
+                                    <input type="text" required placeholder="ML123456789" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Address *</label>
+                                <textarea rows="3" required placeholder="Enter your complete address" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="button" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold" onclick="nextRegistrationStep()">
+                                    Next: Education →
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Education & Specialization -->
+                        <div id="reg-step2" class="registration-step hidden">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Education & Specialization</h2>
+                            
+                            <!-- Medical School -->
+                            <div class="bg-blue-50 rounded-lg p-6 mb-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Medical School Information</h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Medical School *</label>
+                                        <input type="text" required placeholder="Harvard Medical School" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Graduation Year *</label>
+                                        <input type="number" required min="1950" max="2024" placeholder="2015" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Degree *</label>
+                                        <select required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            <option value="">Select Degree</option>
+                                            <option value="md">MD (Doctor of Medicine)</option>
+                                            <option value="do">DO (Doctor of Osteopathic Medicine)</option>
+                                            <option value="mbbs">MBBS (Bachelor of Medicine, Bachelor of Surgery)</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Country *</label>
+                                        <input type="text" required placeholder="United States" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Specialization -->
+                            <div class="bg-green-50 rounded-lg p-6 mb-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Specialization</h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Primary Specialty *</label>
+                                        <select required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            <option value="">Select Specialty</option>
+                                            <option value="family-medicine">Family Medicine</option>
+                                            <option value="internal-medicine">Internal Medicine</option>
+                                            <option value="pediatrics">Pediatrics</option>
+                                            <option value="cardiology">Cardiology</option>
+                                            <option value="dermatology">Dermatology</option>
+                                            <option value="neurology">Neurology</option>
+                                            <option value="psychiatry">Psychiatry</option>
+                                            <option value="surgery">Surgery</option>
+                                            <option value="emergency-medicine">Emergency Medicine</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Years of Experience *</label>
+                                        <input type="number" required min="0" max="50" placeholder="10" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Board Certification</label>
+                                        <input type="text" placeholder="American Board of Family Medicine" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Sub-specialties</label>
+                                        <input type="text" placeholder="Geriatrics, Sports Medicine" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Current Practice -->
+                            <div class="bg-teal-50 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Current Practice</h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Current Hospital/Clinic *</label>
+                                        <input type="text" required placeholder="General Hospital" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Position *</label>
+                                        <select required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            <option value="">Select Position</option>
+                                            <option value="attending">Attending Physician</option>
+                                            <option value="resident">Resident</option>
+                                            <option value="fellow">Fellow</option>
+                                            <option value="chief">Chief of Department</option>
+                                            <option value="private">Private Practice</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <button type="button" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors" onclick="previousRegistrationStep()">
+                                    ← Back
+                                </button>
+                                <button type="button" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold" onclick="nextRegistrationStep()">
+                                    Next: Documents →
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Document Upload -->
+                        <div id="reg-step3" class="registration-step hidden">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Document Verification</h2>
+                            <p class="text-gray-600 mb-8">Please upload the following documents for verification. All documents should be clear and legible.</p>
+                            
+                            <div class="space-y-6">
+                                <!-- Medical License -->
+                                <div class="bg-blue-50 rounded-lg p-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                        📋 Medical License *
+                                    </h3>
+                                    <p class="text-sm text-gray-600 mb-4">Upload a clear copy of your medical license</p>
+                                    <div class="border-2 border-dashed border-blue-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                                        <div class="text-4xl mb-2">📄</div>
+                                        <p class="text-gray-600 mb-2">Drag and drop your medical license here</p>
+                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" id="license-upload">
+                                        <button type="button" class="text-blue-600 hover:text-blue-700 font-medium" onclick="document.getElementById('license-upload').click()">
+                                            Choose File
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Medical Degree -->
+                                <div class="bg-green-50 rounded-lg p-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                        🎓 Medical Degree Certificate *
+                                    </h3>
+                                    <p class="text-sm text-gray-600 mb-4">Upload your medical degree certificate</p>
+                                    <div class="border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors">
+                                        <div class="text-4xl mb-2">🎓</div>
+                                        <p class="text-gray-600 mb-2">Drag and drop your degree certificate here</p>
+                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" id="degree-upload">
+                                        <button type="button" class="text-green-600 hover:text-green-700 font-medium" onclick="document.getElementById('degree-upload').click()">
+                                            Choose File
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Board Certification -->
+                                <div class="bg-purple-50 rounded-lg p-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                        🏆 Board Certification
+                                    </h3>
+                                    <p class="text-sm text-gray-600 mb-4">Upload your board certification (if applicable)</p>
+                                    <div class="border-2 border-dashed border-purple-300 rounded-lg p-6 text-center hover:border-purple-400 transition-colors">
+                                        <div class="text-4xl mb-2">🏆</div>
+                                        <p class="text-gray-600 mb-2">Drag and drop your board certification here</p>
+                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" id="board-upload">
+                                        <button type="button" class="text-purple-600 hover:text-purple-700 font-medium" onclick="document.getElementById('board-upload').click()">
+                                            Choose File
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Professional Photo -->
+                                <div class="bg-teal-50 rounded-lg p-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                        📸 Professional Photo *
+                                    </h3>
+                                    <p class="text-sm text-gray-600 mb-4">Upload a professional headshot for your profile</p>
+                                    <div class="border-2 border-dashed border-teal-300 rounded-lg p-6 text-center hover:border-teal-400 transition-colors">
+                                        <div class="text-4xl mb-2">📸</div>
+                                        <p class="text-gray-600 mb-2">Drag and drop your photo here</p>
+                                        <input type="file" accept=".jpg,.jpeg,.png" class="hidden" id="photo-upload">
+                                        <button type="button" class="text-teal-600 hover:text-teal-700 font-medium" onclick="document.getElementById('photo-upload').click()">
+                                            Choose File
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Documents -->
+                                <div class="bg-orange-50 rounded-lg p-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                        📁 Additional Documents
+                                    </h3>
+                                    <p class="text-sm text-gray-600 mb-4">Upload any additional certifications or documents</p>
+                                    <div class="border-2 border-dashed border-orange-300 rounded-lg p-6 text-center hover:border-orange-400 transition-colors">
+                                        <div class="text-4xl mb-2">📁</div>
+                                        <p class="text-gray-600 mb-2">Drag and drop additional documents here</p>
+                                        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png" class="hidden" id="additional-upload">
+                                        <button type="button" class="text-orange-600 hover:text-orange-700 font-medium" onclick="document.getElementById('additional-upload').click()">
+                                            Choose Files
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="bg-gray-50 rounded-lg p-6 mt-8">
+                                <div class="flex items-start">
+                                    <input type="checkbox" required class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1">
+                                    <div class="ml-3">
+                                        <label class="text-sm text-gray-700">
+                                            I agree to the <a href="#" class="text-blue-600 hover:text-blue-700">Terms and Conditions</a> and 
+                                            <a href="#" class="text-blue-600 hover:text-blue-700">Privacy Policy</a>. I certify that all information 
+                                            provided is accurate and complete.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <button type="button" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors" onclick="previousRegistrationStep()">
+                                    ← Back
+                                </button>
+                                <button type="submit" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold">
+                                    Submit Registration
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Dashboard Page -->
+    <div id="doctor-dashboard" class="page hidden">
+        <div class="min-h-screen bg-gray-50 pt-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Doctor Dashboard</h1>
+                    <p class="text-gray-600">Manage patient consultations and prescriptions</p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Patient List -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-2xl shadow-lg p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-6">Today's Patients</h2>
+                            <div class="space-y-4">
+                                <div class="patient-card border-2 border-blue-200 bg-blue-50 rounded-lg p-4 cursor-pointer" onclick="selectPatient('John Doe')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900">John Doe</h3>
+                                            <p class="text-sm text-gray-600">Age: 35 • 10:00 AM</p>
+                                            <p class="text-sm text-blue-600">Active Consultation</p>
+                                        </div>
+                                        <div class="text-2xl">👨</div>
+                                    </div>
+                                </div>
+
+                                <div class="patient-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-blue-300 transition-colors" onclick="selectPatient('Sarah Wilson')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900">Sarah Wilson</h3>
+                                            <p class="text-sm text-gray-600">Age: 28 • 11:00 AM</p>
+                                            <p class="text-sm text-gray-500">Scheduled</p>
+                                        </div>
+                                        <div class="text-2xl">👩</div>
+                                    </div>
+                                </div>
+
+                                <div class="patient-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-blue-300 transition-colors" onclick="selectPatient('Robert Chen')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900">Robert Chen</h3>
+                                            <p class="text-sm text-gray-600">Age: 45 • 2:00 PM</p>
+                                            <p class="text-sm text-gray-500">Scheduled</p>
+                                        </div>
+                                        <div class="text-2xl">👨</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patient Details & AI Summary -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-semibold text-gray-900">Patient: John Doe</h2>
+                                <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                    🎥 Start Video Call
+                                </button>
+                            </div>
+
+                            <!-- Patient Info -->
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <h3 class="font-semibold text-gray-900 mb-3">Patient Information</h3>
+                                    <div class="space-y-2 text-sm">
+                                        <p><strong>Age:</strong> 35 years</p>
+                                        <p><strong>Phone:</strong> (555) 123-4567</p>
+                                        <p><strong>Email:</strong> john.doe@email.com</p>
+                                        <p><strong>Location:</strong> Rural County, State</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <h3 class="font-semibold text-gray-900 mb-3">Current Symptoms</h3>
+                                    <p class="text-sm text-gray-700">
+                                        Persistent headache for 3 days, accompanied by fatigue and mild fever. 
+                                        Patient reports difficulty concentrating and mild nausea.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- AI Summary -->
+                            <div class="bg-blue-50 rounded-lg p-6 mb-6">
+                                <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+                                    🤖 AI Analysis & Recommendations
+                                </h3>
+                                <div class="space-y-3 text-sm">
+                                    <div class="bg-white rounded p-3">
+                                        <strong>Preliminary Diagnosis:</strong> Viral syndrome, possible tension headache
+                                    </div>
+                                    <div class="bg-white rounded p-3">
+                                        <strong>Risk Factors:</strong> Low risk, symptoms consistent with common viral illness
+                                    </div>
+                                    <div class="bg-white rounded p-3">
+                                        <strong>Recommended Tests:</strong> Temperature monitoring, symptom diary
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Prescription Section -->
+                            <div class="bg-green-50 rounded-lg p-6">
+                                <h3 class="font-semibold text-gray-900 mb-4">Create Prescription</h3>
+                                <div class="space-y-4">
+                                    <div class="grid md:grid-cols-3 gap-4">
+                                        <input type="text" placeholder="Medication name" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        <input type="text" placeholder="Dosage" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        <input type="text" placeholder="Frequency" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <textarea rows="2" placeholder="Additional instructions..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                    <div class="flex space-x-3">
+                                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                            Add Medication
+                                        </button>
+                                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                            Send Prescription
+                                        </button>
+                                        <button class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                            Save Draft
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                            <div class="grid md:grid-cols-4 gap-4">
+                                <button class="bg-purple-100 text-purple-700 p-4 rounded-lg hover:bg-purple-200 transition-colors text-center">
+                                    <div class="text-2xl mb-2">📋</div>
+                                    <div class="text-sm font-medium">Medical History</div>
+                                </button>
+                                <button class="bg-orange-100 text-orange-700 p-4 rounded-lg hover:bg-orange-200 transition-colors text-center">
+                                    <div class="text-2xl mb-2">🔬</div>
+                                    <div class="text-sm font-medium">Order Tests</div>
+                                </button>
+                                <button class="bg-teal-100 text-teal-700 p-4 rounded-lg hover:bg-teal-200 transition-colors text-center">
+                                    <div class="text-2xl mb-2">📅</div>
+                                    <div class="text-sm font-medium">Follow-up</div>
+                                </button>
+                                <button class="bg-red-100 text-red-700 p-4 rounded-lg hover:bg-red-200 transition-colors text-center">
+                                    <div class="text-2xl mb-2">🚨</div>
+                                    <div class="text-sm font-medium">Emergency</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors" onclick="showPage('home')">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-24 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <span class="mr-2">✅</span>
+            <span id="toast-message">Success!</span>
+        </div>
+    </div>
+
+    <script>
+        // Remove loading overlay after page loads
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }, 3000);
+        });
+
+        // Page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Appointment booking flow
+        let currentStep = 1;
+        let selectedHospital = '';
+        let selectedDoctor = '';
+
+        function selectHospital(hospital) {
+            selectedHospital = hospital;
+            document.getElementById('selected-hospital').textContent = hospital;
+            
+            // Update UI
+            document.querySelectorAll('.hospital-card').forEach(card => {
+                card.classList.remove('border-blue-500', 'bg-blue-50');
+                card.classList.add('border-gray-200');
+            });
+            event.currentTarget.classList.remove('border-gray-200');
+            event.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+            
+            // Move to next step after delay
+            setTimeout(() => {
+                nextStep();
+            }, 1000);
+        }
+
+        function selectDoctor(doctor) {
+            selectedDoctor = doctor;
+            document.getElementById('selected-doctor').textContent = doctor;
+            
+            // Update UI
+            document.querySelectorAll('.doctor-card').forEach(card => {
+                card.classList.remove('border-blue-500', 'bg-blue-50');
+                card.classList.add('border-gray-200');
+            });
+            event.currentTarget.classList.remove('border-gray-200');
+            event.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+            
+            // Move to next step after delay
+            setTimeout(() => {
+                nextStep();
+            }, 1000);
+        }
+
+        function nextStep() {
+            if (currentStep < 3) {
+                // Hide current step
+                document.getElementById(`step${currentStep}`).classList.add('hidden');
+                
+                // Update step indicator
+                document.getElementById(`step${currentStep}-indicator`).classList.remove('bg-blue-600', 'text-white');
+                document.getElementById(`step${currentStep}-indicator`).classList.add('bg-green-600', 'text-white');
+                
+                currentStep++;
+                
+                // Show next step
+                document.getElementById(`step${currentStep}`).classList.remove('hidden');
+                
+                // Update step indicator
+                document.getElementById(`step${currentStep}-indicator`).classList.remove('bg-gray-200', 'text-gray-600');
+                document.getElementById(`step${currentStep}-indicator`).classList.add('bg-blue-600', 'text-white');
+                
+                // Show back button
+                if (currentStep > 1) {
+                    document.getElementById('back-btn').classList.remove('hidden');
+                }
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                // Hide current step
+                document.getElementById(`step${currentStep}`).classList.add('hidden');
+                
+                // Update step indicator
+                document.getElementById(`step${currentStep}-indicator`).classList.remove('bg-blue-600', 'text-white');
+                document.getElementById(`step${currentStep}-indicator`).classList.add('bg-gray-200', 'text-gray-600');
+                
+                currentStep--;
+                
+                // Show previous step
+                document.getElementById(`step${currentStep}`).classList.remove('hidden');
+                
+                // Update step indicator
+                document.getElementById(`step${currentStep}-indicator`).classList.remove('bg-green-600');
+                document.getElementById(`step${currentStep}-indicator`).classList.add('bg-blue-600', 'text-white');
+                
+                // Hide back button if on first step
+                if (currentStep === 1) {
+                    document.getElementById('back-btn').classList.add('hidden');
+                }
+            }
+        }
+
+        function generateAISummary() {
+            showToast('Generating AI analysis...');
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                showPage('ai-summary');
+                showToast('AI summary generated successfully!');
+            }, 2000);
+        }
+
+        function selectPatient(patientName) {
+            // Update UI to show selected patient
+            document.querySelectorAll('.patient-card').forEach(card => {
+                card.classList.remove('border-blue-200', 'bg-blue-50');
+                card.classList.add('border-gray-200');
+            });
+            event.currentTarget.classList.remove('border-gray-200');
+            event.currentTarget.classList.add('border-blue-200', 'bg-blue-50');
+            
+            showToast(`Selected patient: ${patientName}`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-x-full');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // File upload handling
+        document.getElementById('file-upload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                showToast(`${files.length} file(s) uploaded successfully!`);
+            }
+        });
+
+        // Doctor registration flow
+        let currentRegistrationStep = 1;
+
+        function nextRegistrationStep() {
+            if (currentRegistrationStep < 3) {
+                // Hide current step
+                document.getElementById(`reg-step${currentRegistrationStep}`).classList.add('hidden');
+                
+                // Update step indicator
+                document.getElementById(`reg-step${currentRegistrationStep}-indicator`).classList.remove('bg-blue-600', 'text-white');
+                document.getElementById(`reg-step${currentRegistrationStep}-indicator`).classList.add('bg-green-600', 'text-white');
+                
+                currentRegistrationStep++;
+                
+                // Show next step
+                document.getElementById(`reg-step${currentRegistrationStep}`).classList.remove('hidden');
+                
+                // Update step indicator
+                document.getElementById(`reg-step${currentRegistrationStep}-indicator`).classList.remove('bg-gray-200', 'text-gray-600');
+                document.getElementById(`reg-step${currentRegistrationStep}-indicator`).classList.add('bg-blue-600', 'text-white');
+            }
+        }
+
+        function previousRegistrationStep() {
+            if (currentRegistrationStep > 1) {
+                // Hide current step
+                document.getElementById(`reg-step${currentRegistrationStep}`).classList.add('hidden');
+                
+                // Update step indicator
+                document.getElementById(`reg-step${currentRegistrationStep}-indicator`).classList.remove('bg-blue-600', 'text-white');
+                document.getElementById(`reg-step${currentRegistrationStep}-indicator`).classList.add('bg-gray-200', 'text-gray-600');
+                
+                currentRegistrationStep--;
+                
+                // Show previous step
+                document.getElementById(`reg-step${currentRegistrationStep}`).classList.remove('hidden');
+                
+                // Update step indicator
+                document.getElementById(`reg-step${currentRegistrationStep}-indicator`).classList.remove('bg-green-600');
+                document.getElementById(`reg-step${currentRegistrationStep}-indicator`).classList.add('bg-blue-600', 'text-white');
+            }
+        }
+
+        function handleDoctorLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('doctor-email').value;
+            const password = document.getElementById('doctor-password').value;
+            
+            // Simulate login validation
+            if (email && password) {
+                showToast('Login successful! Redirecting to dashboard...');
+                setTimeout(() => {
+                    showPage('doctor-dashboard');
+                }, 1500);
+            } else {
+                showToast('Please enter valid credentials');
+            }
+        }
+
+        function handleDoctorRegistration(event) {
+            event.preventDefault();
+            showToast('Registration submitted successfully! Please wait for verification.');
+            
+            // Simulate registration process
+            setTimeout(() => {
+                showToast('Registration under review. You will receive an email within 24-48 hours.');
+                setTimeout(() => {
+                    showPage('doctor-login');
+                }, 2000);
+            }, 2000);
+        }
+
+        // Document upload handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadInputs = ['license-upload', 'degree-upload', 'board-upload', 'photo-upload', 'additional-upload'];
+            
+            uploadInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('change', function(e) {
+                        const files = e.target.files;
+                        if (files.length > 0) {
+                            const fileNames = Array.from(files).map(f => f.name).join(', ');
+                            showToast(`Uploaded: ${fileNames}`);
+                            
+                            // Update UI to show file uploaded
+                            const container = e.target.closest('.border-dashed');
+                            if (container) {
+                                container.classList.add('border-green-400', 'bg-green-50');
+                                container.classList.remove('border-blue-300', 'border-green-300', 'border-purple-300', 'border-teal-300', 'border-orange-300');
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97d054b815658fb2',t:'MTc1NzUyMjA0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
